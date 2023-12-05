@@ -6,9 +6,10 @@ from django.shortcuts import render, redirect
 from .models import Location
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.utils.decorators import method_decorator
+from django.views import View
+from .models import CampusEvent, Building, Feedback
 from .forms import BuildingForm  
-from .models import Building,Feedback
 
 
 # Create your views here.
@@ -36,6 +37,28 @@ def add_location(request):
             return JsonResponse({'error': 'Invalid data provided','status':'fail'})
     else:
         return JsonResponse({'error': 'Invalid request method','status':'fail'})
+    
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CampusEventApiView(View):
+    def get(self, request, *args, **kwargs):
+        events = CampusEvent.objects.all()
+        event_list = [{'id': event.id, 'campus_name': event.campus_name, 'event_name': event.event_name,
+                       'event_description': event.event_description, 'event_image': event.event_image.url,
+                       'event_timestamp': event.event_timestamp, 'slug': event.slug} for event in events]
+        return JsonResponse({'events': event_list}, safe=False)
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        campus_event = CampusEvent.objects.create(
+            campus_name=data['campus_name'],
+            event_name=data['event_name'],
+            event_description=data['event_description'],
+            event_image=data['event_image'],
+            event_timestamp=data['event_timestamp'],
+            slug=data['slug']
+        )
+        return JsonResponse({'id': campus_event.id}, status=201)
 
 
 

@@ -1,0 +1,31 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+    
+    {% endblock head %}
+    <title>{% block title %}CAMPUS NAVIGATOR{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href={% static "styles.css" %}>
+</head>
+<body>
+    <header>
+        <!-- Your header content goes here -->
+        <h1>Welcome to CAMPUS NAVIGATOR</h1>
+    </header>
+    <nav>
+        <!-- Your side navigation content goes here -->
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
